@@ -27,7 +27,6 @@ var App = (function () {
     els.copyOpenLabel = document.getElementById('copy-open-label');
     els.charCount = document.getElementById('char-count');
     els.notification = document.getElementById('notification');
-    els.recommendedStrengths = document.getElementById('recommended-strengths');
 
     els.clearBtn = document.getElementById('clear-btn');
 
@@ -114,9 +113,6 @@ var App = (function () {
     els.confidenceBar.style.backgroundColor = tool.color;
     els.confidenceValue.textContent = rec.confidence + '%';
 
-    // 得意分野タグ
-    renderStrengths(tool);
-
     // 代替候補
     els.alternativesContainer.innerHTML = '';
     result.alternatives.forEach(function (alt) {
@@ -155,9 +151,6 @@ var App = (function () {
     els.confidenceBar.style.backgroundColor = toolInfo.color;
     els.confidenceValue.textContent = result.confidence + '%';
 
-    // 得意分野タグ
-    renderStrengths(toolInfo);
-
     renderPrompt(toolId, els.input.value);
     updateCopyButton(toolInfo);
   }
@@ -180,19 +173,6 @@ var App = (function () {
     } else {
       els.modelHint.style.display = 'none';
     }
-  }
-
-  /**
-   * 得意分野タグを描画
-   */
-  function renderStrengths(tool) {
-    if (!tool.strengths || !tool.strengths.length) {
-      els.recommendedStrengths.innerHTML = '';
-      return;
-    }
-    els.recommendedStrengths.innerHTML = tool.strengths.map(function (s) {
-      return '<span class="strength-tag">' + escapeHtml(s) + '</span>';
-    }).join('');
   }
 
   function escapeHtml(str) {
