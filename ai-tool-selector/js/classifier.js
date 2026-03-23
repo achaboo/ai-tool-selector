@@ -1,5 +1,13 @@
 /**
  * AI Tool Classifier - 入力内容から最適なAIツールを判定するエンジン
+ *
+ * 各ツールの得意分野:
+ *   Claude      → 長文読解・コード・論理的思考・文章作成
+ *   Gemini      → 画像・動画・Google連携
+ *   ChatGPT     → 汎用・プラグイン活用
+ *   Perplexity  → リアルタイム検索・引用付き回答
+ *   Grok        → X/トレンド・最新情報
+ *   Copilot     → Excel・Word・PowerPoint
  */
 var Classifier = (function () {
   // ツール定義
@@ -10,58 +18,28 @@ var Classifier = (function () {
       plan: "課金",
       color: "#D97706",
       keywords: [
-        "コード",
-        "コーディング",
-        "プログラム",
-        "プログラミング",
-        "バグ",
-        "実装",
-        "リファクタ",
-        "リファクタリング",
-        "デバッグ",
-        "設計",
-        "アーキテクチャ",
-        "API",
-        "関数",
-        "クラス",
-        "モジュール",
-        "ライブラリ",
-        "フレームワーク",
-        "テスト",
-        "ユニットテスト",
-        "HTML",
-        "CSS",
-        "JavaScript",
-        "Python",
-        "Java",
-        "TypeScript",
-        "React",
-        "Vue",
-        "Node",
-        "SQL",
-        "データベース",
-        "DB",
-        "Git",
-        "GitHub",
-        "Docker",
-        "AWS",
-        "Azure",
-        "アルゴリズム",
-        "計算量",
-        "O(n)",
-        "ソート",
-        "エラー",
-        "スタックトレース",
-        "ログ",
-        "型",
-        "変数",
-        "配列",
-        "オブジェクト",
-        "コンパイル",
-        "ビルド",
-        "デプロイ",
+        // コード・開発
+        "コード", "コーディング", "プログラム", "プログラミング",
+        "バグ", "実装", "リファクタ", "リファクタリング", "デバッグ",
+        "設計", "アーキテクチャ", "API", "関数", "クラス", "モジュール",
+        "ライブラリ", "フレームワーク", "テスト", "ユニットテスト",
+        "HTML", "CSS", "JavaScript", "Python", "Java", "TypeScript",
+        "React", "Vue", "Node", "SQL", "データベース", "DB",
+        "Git", "GitHub", "Docker", "AWS", "Azure",
+        "アルゴリズム", "計算量", "O(n)", "ソート",
+        "エラー", "スタックトレース", "ログ", "型", "変数",
+        "配列", "オブジェクト", "コンパイル", "ビルド", "デプロイ",
+        // 長文読解・文章作成
+        "長文", "読解", "文章作成", "ライティング", "論述", "論考",
+        "エッセイ", "添削", "校正", "構成", "執筆", "原稿",
+        // 論理的思考・分析
+        "論理的", "思考整理", "考察", "深掘り", "批評", "批判的",
+        "要約", "レビュー", "評価", "整理して", "分析",
       ],
-      conditions: [{ type: "length", min: 500, score: 15 }],
+      conditions: [
+        { type: "length", min: 500, score: 15 },
+        { type: "long_writing", score: 12 },
+      ],
     },
     gemini: {
       id: "gemini",
@@ -69,29 +47,14 @@ var Classifier = (function () {
       plan: "課金",
       color: "#4285F4",
       keywords: [
-        "画像",
-        "写真",
-        "動画",
-        "YouTube",
-        "Gmail",
-        "スプレッドシート",
-        "Google",
-        "ドライブ",
-        "Googleドキュメント",
-        "Googleスライド",
-        "マップ",
-        "Google Maps",
-        "カレンダー",
-        "Android",
-        "Pixel",
-        "Chrome拡張",
-        "OCR",
-        "図",
-        "グラフ",
-        "チャート",
-        "スクリーンショット",
+        // 画像・動画
+        "画像", "写真", "動画", "YouTube", "図", "グラフ",
+        "チャート", "スクリーンショット", "OCR", "ファイル分析",
+        // Google連携
+        "Gmail", "スプレッドシート", "Google", "ドライブ",
+        "Googleドキュメント", "Googleスライド", "マップ",
+        "Google Maps", "カレンダー", "Android", "Pixel", "Chrome拡張",
         "PDF",
-        "ファイル分析",
       ],
       conditions: [
         { type: "url", score: 10 },
@@ -104,32 +67,14 @@ var Classifier = (function () {
       plan: "無料",
       color: "#20B8CD",
       keywords: [
-        "最新",
-        "ニュース",
-        "調べて",
-        "検索",
-        "ソース",
-        "出典",
-        "論文",
-        "統計",
-        "比較検討",
-        "ファクトチェック",
-        "事実確認",
-        "いつ",
-        "何年",
-        "現在",
-        "今",
-        "データ",
-        "数値",
-        "根拠",
-        "情報源",
-        "リサーチ",
-        "調査",
-        "市場",
-        "業界",
-        "引用",
-        "参考文献",
-        "エビデンス",
+        // リアルタイム検索
+        "調べて", "検索", "リサーチ", "調査",
+        // 引用・ファクト
+        "ソース", "出典", "引用", "参考文献", "エビデンス",
+        "論文", "統計", "数値", "根拠", "情報源",
+        "ファクトチェック", "事実確認", "比較検討",
+        // 時事・事実確認
+        "いつ", "何年", "現在", "市場", "業界",
       ],
       conditions: [{ type: "question_latest", score: 15 }],
     },
@@ -139,30 +84,14 @@ var Classifier = (function () {
       plan: "無料",
       color: "#7F5AF0",
       keywords: [
-        "Excel",
-        "Word",
-        "PowerPoint",
-        "Outlook",
-        "Teams",
-        "Windows",
-        "Office",
-        "Microsoft",
-        "メール作成",
-        "ビジネス文書",
-        "議事録",
-        "スライド",
-        "プレゼン",
-        "プレゼンテーション",
-        "表計算",
-        "マクロ",
-        "VBA",
-        "OneDrive",
-        "SharePoint",
-        "Bing",
-        "報告書",
-        "企画書",
-        "提案書",
-        "見積書",
+        // Microsoft Office
+        "Excel", "Word", "PowerPoint", "Outlook", "Teams",
+        "Windows", "Office", "Microsoft",
+        "表計算", "マクロ", "VBA", "OneDrive", "SharePoint", "Bing",
+        // ビジネス文書
+        "スライド", "プレゼン", "プレゼンテーション",
+        "メール作成", "ビジネス文書", "議事録",
+        "報告書", "企画書", "提案書", "見積書",
       ],
       conditions: [],
     },
@@ -172,25 +101,18 @@ var Classifier = (function () {
       plan: "無料",
       color: "#000000",
       keywords: [
-        "X",
-        "Twitter",
-        "トレンド",
-        "バズ",
-        "SNS",
-        "ミーム",
-        "炎上",
-        "話題",
-        "ネタ",
-        "ツイート",
-        "ポスト",
-        "リポスト",
-        "フォロワー",
-        "インプレッション",
-        "イーロン",
-        "Elon",
-        "Musk",
+        // X / SNS
+        "Twitter", "ツイート", "ポスト", "リポスト",
+        "フォロワー", "インプレッション", "イーロン", "Elon", "Musk",
+        "SNS", "ミーム", "炎上",
+        // トレンド・最新情報
+        "トレンド", "バズ", "話題", "ネタ",
+        "最新情報", "速報", "リアルタイム", "今起きている",
       ],
-      conditions: [{ type: "sns_context", score: 10 }],
+      conditions: [
+        { type: "sns_context", score: 10 },
+        { type: "x_trend", score: 12 },
+      ],
     },
     chatgpt: {
       id: "chatgpt",
@@ -198,28 +120,17 @@ var Classifier = (function () {
       plan: "無料",
       color: "#10A37F",
       keywords: [
-        "教えて",
-        "とは",
-        "意味",
-        "おすすめ",
-        "雑談",
-        "相談",
-        "アイデア",
-        "ブレスト",
-        "物語",
-        "小説",
-        "詩",
-        "歌詞",
-        "作文",
-        "翻訳",
-        "英語",
-        "日本語",
-        "料理",
-        "レシピ",
-        "旅行",
-        "健康",
-        "簡単に",
-        "わかりやすく",
+        // 汎用・一般
+        "教えて", "とは", "意味", "おすすめ", "雑談", "相談",
+        "簡単に", "わかりやすく",
+        // プラグイン・機能活用
+        "プラグイン", "DALL-E", "画像生成", "ブラウジング",
+        "GPTs", "カスタムGPT",
+        // クリエイティブ
+        "アイデア", "ブレスト", "物語", "小説", "詩", "歌詞",
+        "作文", "翻訳", "英語", "日本語",
+        // 生活・雑学
+        "料理", "レシピ", "旅行", "健康",
       ],
       conditions: [],
     },
@@ -235,35 +146,20 @@ var Classifier = (function () {
     "chatgpt",
   ];
 
-  // Claude vs Gemini 棲み分け用のコーディングキーワード
+  // コード系キーワード（ツール棲み分け調整に使用）
   var CODE_KEYWORDS = [
-    "コード",
-    "コーディング",
-    "プログラム",
-    "プログラミング",
-    "バグ",
-    "実装",
-    "リファクタ",
-    "デバッグ",
-    "関数",
-    "クラス",
-    "HTML",
-    "CSS",
-    "JavaScript",
-    "Python",
-    "Java",
-    "TypeScript",
-    "React",
-    "Vue",
-    "Node",
-    "SQL",
-    "Git",
-    "Docker",
-    "API",
-    "アルゴリズム",
-    "コンパイル",
-    "ビルド",
-    "デプロイ",
+    "コード", "コーディング", "プログラム", "プログラミング",
+    "バグ", "実装", "リファクタ", "デバッグ", "関数", "クラス",
+    "HTML", "CSS", "JavaScript", "Python", "Java", "TypeScript",
+    "React", "Vue", "Node", "SQL", "Git", "Docker", "API",
+    "アルゴリズム", "コンパイル", "ビルド", "デプロイ",
+  ];
+
+  // 長文・論理的文章のキーワード（Claude得意領域）
+  var WRITING_KEYWORDS = [
+    "長文", "読解", "文章作成", "論述", "エッセイ", "添削",
+    "校正", "構成", "執筆", "原稿", "論理的", "思考整理",
+    "考察", "深掘り", "批評", "批判的", "要約",
   ];
 
   /**
@@ -282,8 +178,8 @@ var Classifier = (function () {
       scores[toolId] = calculateScore(text, TOOLS[toolId]);
     });
 
-    // Claude vs Gemini 棲み分け調整
-    adjustClaudeGemini(text, scores);
+    // ツール棲み分け調整
+    adjustToolScores(text, scores);
 
     // スコア順にソート
     var ranked = PRIORITY.slice().sort(function (a, b) {
@@ -363,6 +259,11 @@ var Classifier = (function () {
             score += cond.score;
           }
           break;
+        case "long_writing":
+          if (WRITING_KEYWORDS.some(function (kw) { return text.indexOf(kw) !== -1; })) {
+            score += cond.score;
+          }
+          break;
         case "question_latest":
           if (/最新|今年|2025|2026|現在の|いま/.test(text)) {
             score += cond.score;
@@ -373,6 +274,11 @@ var Classifier = (function () {
             score += cond.score;
           }
           break;
+        case "x_trend":
+          if (/(トレンド|バズ|話題|速報|リアルタイム)/.test(text)) {
+            score += cond.score;
+          }
+          break;
       }
     });
 
@@ -380,33 +286,43 @@ var Classifier = (function () {
   }
 
   /**
-   * Claude vs Gemini の棲み分け調整
+   * ツール棲み分け調整
+   * 各ツールの得意分野が重なる場合に適切なツールへスコアを加算する
    */
-  function adjustClaudeGemini(text, scores) {
-    if (scores.claude < 10 && scores.gemini < 10) return;
+  function adjustToolScores(text, scores) {
+    var hasCode = CODE_KEYWORDS.some(function (kw) { return text.indexOf(kw) !== -1; });
+    var hasWriting = WRITING_KEYWORDS.some(function (kw) { return text.indexOf(kw) !== -1; });
+    var hasImage = /この(画像|写真|図|グラフ|スクリーンショット|スクショ)/.test(text);
+    var hasGoogle = /(Google|Gmail|YouTube|スプレッドシート|ドライブ)/i.test(text);
+    var hasSNSTrend = /(X|Twitter|トレンド|バズ|ツイート|SNS)/i.test(text);
+    var hasFactSearch = /(論文|統計|ファクトチェック|引用|出典|エビデンス)/.test(text);
+    var isLongText = text.length >= 300;
 
-    var hasCodeContext = CODE_KEYWORDS.some(function (kw) {
-      return text.indexOf(kw) !== -1;
-    });
-
-    var hasImageContext =
-      /この(画像|写真|図|グラフ|スクリーンショット|スクショ)/.test(text);
-    var hasGoogleContext =
-      /(Google|Gmail|YouTube|スプレッドシート|ドライブ)/i.test(text);
-
-    // 画像・Google系が絡む場合 → Gemini優先
-    if (hasImageContext || hasGoogleContext) {
-      scores.gemini += 15;
-    }
-
-    // コードが絡む場合 → Claude優先
-    if (hasCodeContext) {
+    // コード → Claude優先
+    if (hasCode) {
       scores.claude += 15;
     }
 
-    // コード以外の推論・分析 → Gemini寄せ
-    if (!hasCodeContext && /(分析|推論|考察|評価|批判的)/.test(text)) {
-      scores.gemini += 10;
+    // 長文読解・論理的文章作成 → Claude優先
+    if (hasWriting || (isLongText && !hasImage && !hasGoogle)) {
+      scores.claude += 10;
+    }
+
+    // 画像・動画・Google連携 → Gemini優先
+    if (hasImage || hasGoogle) {
+      scores.gemini += 15;
+      // コードが絡まない画像・分析はGeminiへ
+      if (!hasCode) scores.claude = Math.max(0, scores.claude - 5);
+    }
+
+    // X/SNS・トレンド → Grok優先（事実引用系はPerplexityと分離）
+    if (hasSNSTrend && !hasFactSearch) {
+      scores.grok += 12;
+    }
+
+    // 引用・論文・ファクト → Perplexity優先（SNSトレンドと分離）
+    if (hasFactSearch && !hasSNSTrend) {
+      scores.perplexity += 12;
     }
   }
 
@@ -415,23 +331,34 @@ var Classifier = (function () {
    */
   function generateReason(toolId, text) {
     var reasons = {
-      claude: "コーディング・技術的な分析に最適",
-      gemini: "マルチモーダル処理・Google連携に最適",
-      perplexity: "リアルタイム検索・出典付き回答に最適",
-      copilot: "Microsoft連携・ビジネス文書に最適",
-      grok: "SNSトレンド・カジュアルな対話に最適",
-      chatgpt: "汎用的な質問・一般会話に最適",
+      claude: "長文読解・コード・論理的思考・文章作成に最適",
+      gemini: "画像・動画・Google連携に最適",
+      perplexity: "リアルタイム検索・引用付き回答に最適",
+      copilot: "Excel・Word・PowerPoint操作に最適",
+      grok: "X/トレンド・最新情報の把握に最適",
+      chatgpt: "汎用・プラグイン活用に最適",
     };
 
     // より具体的な理由を追加
-    if (toolId === "claude" && text.length > 500) {
-      return reasons[toolId] + "（長文の分析も得意）";
+    if (toolId === "claude") {
+      if (CODE_KEYWORDS.some(function (kw) { return text.indexOf(kw) !== -1; })) {
+        return reasons[toolId] + "（コーディング・技術分析）";
+      }
+      if (text.length > 500) {
+        return reasons[toolId] + "（長文の読解・要約）";
+      }
+      if (WRITING_KEYWORDS.some(function (kw) { return text.indexOf(kw) !== -1; })) {
+        return reasons[toolId] + "（論理的な文章作成）";
+      }
     }
     if (toolId === "gemini" && /この(画像|写真|図)/.test(text)) {
       return reasons[toolId] + "（画像解析が可能）";
     }
-    if (toolId === "perplexity" && /(最新|ニュース|今)/.test(text)) {
-      return reasons[toolId] + "（最新情報をソース付きで提供）";
+    if (toolId === "perplexity" && /(論文|統計|引用|エビデンス)/.test(text)) {
+      return reasons[toolId] + "（信頼できる出典付きで回答）";
+    }
+    if (toolId === "grok" && /(トレンド|バズ|X|Twitter)/i.test(text)) {
+      return reasons[toolId] + "（リアルタイムのSNS情報）";
     }
 
     return reasons[toolId];
