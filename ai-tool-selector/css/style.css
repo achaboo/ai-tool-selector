@@ -326,6 +326,9 @@ body {
   font-size: 0.72rem;
   color: var(--color-text-secondary);
   line-height: 1.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* --- Alternatives --- */
