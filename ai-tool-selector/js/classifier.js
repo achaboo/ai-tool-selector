@@ -17,6 +17,7 @@ var Classifier = (function () {
       name: "Claude Pro",
       plan: "課金",
       color: "#D97706",
+      strengths: ["長文読解", "コード", "論理的思考", "文章作成"],
       keywords: [
         // コード・開発
         "コード", "コーディング", "プログラム", "プログラミング",
@@ -46,6 +47,7 @@ var Classifier = (function () {
       name: "Gemini Pro",
       plan: "課金",
       color: "#4285F4",
+      strengths: ["画像", "動画", "Google連携"],
       keywords: [
         // 画像・動画
         "画像", "写真", "動画", "YouTube", "図", "グラフ",
@@ -66,6 +68,7 @@ var Classifier = (function () {
       name: "Perplexity",
       plan: "無料",
       color: "#20B8CD",
+      strengths: ["リアルタイム検索", "引用付き回答"],
       keywords: [
         // リアルタイム検索
         "調べて", "検索", "リサーチ", "調査",
@@ -83,6 +86,7 @@ var Classifier = (function () {
       name: "Copilot",
       plan: "無料",
       color: "#7F5AF0",
+      strengths: ["Excel", "Word", "PowerPoint"],
       keywords: [
         // Microsoft Office
         "Excel", "Word", "PowerPoint", "Outlook", "Teams",
@@ -100,6 +104,7 @@ var Classifier = (function () {
       name: "Grok",
       plan: "無料",
       color: "#000000",
+      strengths: ["X/トレンド", "最新情報"],
       keywords: [
         // X / SNS
         "Twitter", "ツイート", "ポスト", "リポスト",
@@ -119,6 +124,7 @@ var Classifier = (function () {
       name: "ChatGPT",
       plan: "無料",
       color: "#10A37F",
+      strengths: ["汎用", "プラグイン活用"],
       keywords: [
         // 汎用・一般
         "教えて", "とは", "意味", "おすすめ", "雑談", "相談",

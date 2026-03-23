@@ -312,6 +312,24 @@ body {
   text-align: right;
 }
 
+/* --- Strengths --- */
+.recommended-strengths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.strength-tag {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
 /* --- Alternatives --- */
 .alternatives-section {
   margin-top: 16px;
